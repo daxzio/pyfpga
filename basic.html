@@ -1,0 +1,239 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Basic usage &mdash; PyFPGA  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Advanced usage" href="advanced.html" />
+    <link rel="prev" title="Introduction" href="intro.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PyFPGA
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Basic usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#project-configuration">Project Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bitstream-generation">Bitstream generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bitstream-programming">Bitstream programming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#debugging">Debugging</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals.html">Internals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending.html">Extending</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PyFPGA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Basic usage</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/basic.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="basic-usage">
+<h1>Basic usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h1>
+<section id="project-configuration">
+<h2>Project Configuration<a class="headerlink" href="#project-configuration" title="Link to this heading"></a></h2>
+<p>The first steps involve importing the necessary module to support the desired tool and instantiating the corresponding <code class="docutils literal notranslate"><span class="pre">class</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyfpga.vivado</span> <span class="kn">import</span> <span class="n">Vivado</span>
+
+<span class="n">prj</span> <span class="o">=</span> <span class="n">Vivado</span><span class="p">(</span><span class="s1">&#39;PRJNAME&#39;</span><span class="p">,</span> <span class="n">odir</span><span class="o">=</span><span class="s1">&#39;OUTDIR&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In the example, we are using Vivado, specifying the optional parameters
+<code class="docutils literal notranslate"><span class="pre">project</span> <span class="pre">name</span></code> (<code class="docutils literal notranslate"><span class="pre">tool</span> <span class="pre">name</span></code> if omitted) and <code class="docutils literal notranslate"><span class="pre">output</span> <span class="pre">directory</span></code>
+(<code class="docutils literal notranslate"><span class="pre">results</span></code> by default).</p>
+<p>Next step is to specify the target FPGA device:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">prj</span><span class="o">.</span><span class="n">set_part</span><span class="p">(</span><span class="s1">&#39;xc7k160t-3-fbg484&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Default parts are provided for each supported tool.</p>
+</div>
+<p>HDL source files are added using one of the following methods:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">prj</span><span class="o">.</span><span class="n">add_vhdl</span><span class="p">(</span><span class="s1">&#39;PATH_TO_FILES_GLOB_COMPATIBLE&#39;</span><span class="p">,</span> <span class="s1">&#39;OPTIONAL_LIBNAME&#39;</span><span class="p">)</span>
+<span class="n">prj</span><span class="o">.</span><span class="n">add_vlog</span><span class="p">(</span><span class="s1">&#39;PATH_TO_FILES_GLOB_COMPATIBLE&#39;</span><span class="p">)</span>
+<span class="n">prj</span><span class="o">.</span><span class="n">add_slog</span><span class="p">(</span><span class="s1">&#39;PATH_TO_FILES_GLOB_COMPATIBLE&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In these methods, you provide a path to the files. The path can include wildcards (like <code class="docutils literal notranslate"><span class="pre">*.vhdl</span></code>), allowing you to match multiple files at once.
+In case of <code class="docutils literal notranslate"><span class="pre">add_vhdl</span></code>, you can also optionally specify a library name where the files will be included.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<blockquote>
+<div><p>Internally, the methods that specify files use <a class="reference external" href="https://docs.python.org/3/library/glob.html">glob</a> to support wildcards and <a class="reference external" href="https://docs.python.org/3/library/pathlib.html">Path</a> to obtain absolute paths.</p>
+</div></blockquote>
+</div>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>Files are processed in the order they are added. If a file is specified more than once,
+it is removed from its previous position and placed at the end of the list.
+This allows you to ensure that a file is processed after others when necessary
+(e.g., placing a top-level at the end) or to customize options
+(e.g., removing a VHDL library specification in case of a top-level)
+when multiple files are added using a wildcard.</p>
+</div>
+<p>Generics/parameters can be specified with:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">prj</span><span class="o">.</span><span class="n">add_param</span><span class="p">(</span><span class="s1">&#39;PARAMNAME&#39;</span><span class="p">,</span> <span class="s1">&#39;PARAMVALUE&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For Verilog and SystemVerilog, the following methods are also available:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">prj</span><span class="o">.</span><span class="n">add_include</span><span class="p">(</span><span class="s1">&#39;PATH_TO_A_DIRECTORY&#39;</span><span class="p">)</span>
+<span class="n">prj</span><span class="o">.</span><span class="n">add_define</span><span class="p">(</span><span class="s1">&#39;DEFNAME&#39;</span><span class="p">,</span> <span class="s1">&#39;DEFVALUE&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Constraint source files are included using the following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">prj</span><span class="o">.</span><span class="n">add_cons</span><span class="p">(</span><span class="s1">&#39;PATH_TO_FILES_GLOB_COMPATIBLE&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Finally, the top-level can be specified as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">prj</span><span class="o">.</span><span class="n">set_top</span><span class="p">(</span><span class="s1">&#39;Top&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The order of the methods described in this section is not significant.
+They will be arranged in the required order by the underlying template.</p>
+</div>
+</section>
+<section id="bitstream-generation">
+<h2>Bitstream generation<a class="headerlink" href="#bitstream-generation" title="Link to this heading"></a></h2>
+<p>After configuring the project, you can run the following to generate a bitstream:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">prj</span><span class="o">.</span><span class="n">make</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>By default, this method performs <strong>project creation</strong>, <strong>synthesis</strong>, <strong>place and route</strong>,
+and <strong>bitstream generation</strong>.
+However, you can optionally specify both the initial and final stages, as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">prj</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">first</span><span class="o">=</span><span class="s1">&#39;syn&#39;</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="s1">&#39;par&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Valid values are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cfg</span></code>: generates the project file</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">syn</span></code>: performs synthesis</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">par</span></code>: performs place and route</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bit</span></code>: performs bitstream generation</p></li>
+</ul>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>After executing this method, you will find the file <code class="docutils literal notranslate"><span class="pre">&lt;TOOL&gt;.tcl</span></code>
+(<code class="docutils literal notranslate"><span class="pre">&lt;TOOL&gt;.sh</span></code> in some cases) in the output directory.
+For debugging purposes, if things do not work as expected, you can review this file.</p>
+</div>
+</section>
+<section id="bitstream-programming">
+<h2>Bitstream programming<a class="headerlink" href="#bitstream-programming" title="Link to this heading"></a></h2>
+<p>The final step is programming the FPGA:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">prj</span><span class="o">.</span><span class="n">prog</span><span class="p">(</span><span class="s1">&#39;BITSTREAM&#39;</span><span class="p">,</span> <span class="s1">&#39;POSITION&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Both <code class="docutils literal notranslate"><span class="pre">BITSTREAM</span></code> and <code class="docutils literal notranslate"><span class="pre">POSITION</span></code> are optional.
+If <code class="docutils literal notranslate"><span class="pre">BITSTREAM</span></code> is not specified, PyFPGA will attempt to discover it based on project information.
+The <code class="docutils literal notranslate"><span class="pre">POSITION</span></code> parameter is not always required (depends on the tool being used).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>After executing this method, you will find the file <code class="docutils literal notranslate"><span class="pre">&lt;TOOL&gt;prog.tcl</span></code>
+(<code class="docutils literal notranslate"><span class="pre">&lt;TOOL&gt;-prog.sh</span></code> in some cases) in the output directory.
+For debugging purposes, if things do not work as expected, you can review this file.</p>
+</div>
+</section>
+<section id="debugging">
+<h2>Debugging<a class="headerlink" href="#debugging" title="Link to this heading"></a></h2>
+<p>Under the hood, <a class="reference external" href="https://docs.python.org/3/library/logging.html">logging</a> is employed. To enable debug messages, you can use:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">prj</span><span class="o">.</span><span class="n">set_debug</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="intro.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="advanced.html" class="btn btn-neutral float-right" title="Advanced usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2024, PyFPGA Project.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
