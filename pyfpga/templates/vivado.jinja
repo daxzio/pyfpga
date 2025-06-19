@@ -47,6 +47,9 @@ set_property GENERIC { {{ params.items() | map('join', '=') | join(' ') }} } -ob
 
 {% if hooks %}{{ hooks.postcfg | join('\n') }}{% endif %}
 
+set_property source_mgmt_mode All [current_project]
+update_compile_order -fileset sources_1
+
 close_project
 
 {% endif %}
