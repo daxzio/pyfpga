@@ -25,6 +25,7 @@ TOOLS = {
     'openflow': Openflow,
     'quartus': Quartus,
     'vivado': Vivado
+    'gowin': Gowin
 }
 
 
