@@ -1,0 +1,4 @@
+// nextpnr-himbaechel CST — pad cell names after rename_gowin_iopads.py
+IO_LOC "clk_i_IBUF_I" 4;
+IO_PORT "clk_i_IBUF_I" IO_TYPE=LVCMOS33 PULL_MODE=UP BANK_VCCIO=3.3;
+CLOCK_LOC "clk_i" BUFG;

@@ -1,0 +1,101 @@
+{#
+#
+# Copyright (C) 2026 PyFPGA Project
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Host yosys + nextpnr-himbaechel + gowin_pack (no Gowin EDA, no docker).
+# CST IO_LOC names must be pad cells (port_IBUF_I / port_OBUF_O) after
+# rename_gowin_iopads.py — nextpnr rejects a pad named the same as a top IO.
+#
+#}
+
+set -e
+
+{% if 'syn' in steps %}# Synthesis
+{% if hooks and hooks.presyn %}
+set +e
+{{ hooks.presyn | join('\n') }}
+set -e
+{% endif %}
+
+yosys -Q -p '
+{% if includes %}
+verilog_defaults -add{% for path in includes %} -I{{ path }}{% endfor %}
+{% endif %}
+{% if defines %}
+verilog_defines{% for key, value in defines.items() %} -D{{ key }}={{ value }}{% endfor %}
+{% endif %}
+{% if files %}
+{% for name, attr in files.items() %}
+{% if attr.hdl in ["vlog", "slog"] %}
+read_verilog -sv -defer {{ name }}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if params %}
+chparam{% for key, value in params.items() %} -set {{ key }} {{ value }}{% endfor %}
+{% endif %}
+hierarchy -top {{ top }}
+flatten
+synth_gowin -family {{ synth_family }} -top {{ top }} -noiopads
+iopadmap -bits -inpad IBUF O:I -outpad OBUF I:O
+clean
+write_json {{ project }}.json
+'
+
+{{ python }} {{ rename_iopads }} {{ project }}.json {{ top }}
+
+{% if hooks and hooks.postsyn %}
+set +e
+{{ hooks.postsyn | join('\n') }}
+set -e
+{% endif %}
+{% endif %}
+
+{% if 'par' in steps %}# Place and Route
+
+{% if cst_files %}
+: > {{ project }}.cst
+{% for name in cst_files %}
+cat {{ name }} >> {{ project }}.cst
+{% endfor %}
+{% endif %}
+
+{% if hooks and hooks.prepar %}
+set +e
+{{ hooks.prepar | join('\n') }}
+set -e
+{% endif %}
+nextpnr-himbaechel \
+	--json {{ project }}.json \
+	--write {{ project }}_routed.json \
+	--device {{ device }} \
+	--vopt family={{ family }} \
+	--vopt sspi_as_gpio \
+	--vopt i2c_as_gpio{% if cst_files %} \
+	--vopt cst={{ project }}.cst{% endif %}{% if nextpnr_freq %} \
+	--freq {{ nextpnr_freq }}{% endif %}
+{% if hooks and hooks.postpar %}
+set +e
+{{ hooks.postpar | join('\n') }}
+set -e
+{% endif %}
+
+{% endif %}
+
+{% if 'bit' in steps %}# Bitstream generation
+
+{% if hooks and hooks.prebit %}
+set +e
+{{ hooks.prebit | join('\n') }}
+set -e
+{% endif %}
+gowin_pack --sspi_as_gpio --mspi_as_gpio -d {{ family }} -o {{ project }}.fs {{ project }}_routed.json
+{% if hooks and hooks.postbit %}
+set +e
+{{ hooks.postbit | join('\n') }}
+set -e
+{% endif %}
+
+{% endif %}

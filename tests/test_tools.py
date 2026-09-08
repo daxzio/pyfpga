@@ -22,6 +22,14 @@ def test_gowin():
     assert Path(f'{base}-prog.sh').exists(), 'file not found'
 
 
+def test_gowin_yosys():
+    tool = 'gowin_yosys'
+    generate(tool, 'GW2AR-LV18QN88C8/I7')
+    base = f'results/{tool}/{tool}'
+    assert Path(f'{base}.sh').exists(), 'file not found'
+    assert Path(f'{base}-prog.sh').exists(), 'file not found'
+
+
 def test_ise():
     tool = 'ise'
     generate(tool, 'DEVICE-PACKAGE-SPEED')

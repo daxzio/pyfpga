@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+
+#
+# Copyright (C) 2026 PyFPGA Project
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+
+"""Yosys mock: write a minimal JSON so rename_gowin_iopads.py can run."""
+
+import json
+import re
+import sys
+
+text = ' '.join(sys.argv)
+json_match = re.search(r'write_json\s+(\S+)', text)
+top_match = re.search(r'-top\s+(\S+)', text)
+out = (json_match.group(1) if json_match else 'gowin_yosys.json').rstrip(';')
+top = (top_match.group(1) if top_match else 'top').rstrip(';')
+
+with open(out, 'w', encoding='utf-8') as file:
+    json.dump(
+        {'modules': {top: {'ports': {}, 'cells': {}, 'netnames': {}}}},
+        file,
+    )
+    file.write('\n')
+
+print('INFO:the YOSYS mock has been executed')

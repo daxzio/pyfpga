@@ -16,6 +16,10 @@ Tools
      - Gowin Semiconductor
      - GW2AR-LV18QN88C8/I7
      - part
+   * - Gowin Yosys
+     - FLOSS (Apicula)
+     - GW2AR-LV18QN88C8/I7
+     - part
    * - ISE
      - Xilinx
      - XC7K160T-3-FBG484
@@ -72,6 +76,29 @@ Example:
    from pyfpga.gowin import Gowin
 
    prj = Gowin()
+
+Gowin Yosys
+-----------
+
+Yosys ``synth_gowin`` + ``nextpnr-himbaechel`` + Apicula ``gowin_pack``.
+Runs on the host PATH (no Gowin EDA, no Docker). Do not ``module load gowin``
+alongside this flow: vendor ``libstdc++`` breaks nextpnr.
+
+Default part is ``GW2AR-LV18QN88C8/I7`` (Sipeed Tang Nano 20K). Bitstreams are
+``.fs`` files. CST ``IO_LOC`` names must be pad cells after iopadmap rename
+(``port_IBUF_I`` / ``port_OBUF_O``); a pad cell cannot share a top-level port
+name. Set ``FREQ`` in Hz (e.g. ``27000000``) to pass ``--freq`` to nextpnr.
+
+Needs ``yosys``, ``nextpnr-himbaechel`` (himbaechel + gowin, matching family
+chipdb), and ``gowin_pack`` (``pip install apycula``).
+
+Example:
+
+.. code::
+
+   from pyfpga.gowin_yosys import GowinYosys
+
+   prj = GowinYosys()
 
 ISE
 ---
@@ -151,7 +178,8 @@ It relies on Docker and fine-grain containers.
 
 .. attention::
 
-   It is currently the only flow not solved using Tcl (it uses docker in a bash script instead).
+   It uses docker in a bash script instead of Tcl. Gowin Yosys is the other
+   bash flow (host yosys / nextpnr-himbaechel, no Docker).
 
 Example:
 

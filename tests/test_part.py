@@ -1,6 +1,7 @@
 from pyfpga.ise import get_info as get_info_ise
 from pyfpga.libero import get_info as get_info_libero
 from pyfpga.openflow import get_info as get_info_openflow
+from pyfpga.gowin_yosys import get_info as get_info_gowin_yosys
 
 
 def test_ise():
@@ -117,3 +118,18 @@ def test_openflow():
     assert get_info_openflow('25k-CSFBGA285') == info
     info = {'family': 'ecp5', 'device': 'um5g-85k', 'package': 'CABGA381'}
     assert get_info_openflow('um5g-85k-CABGA381') == info
+
+
+def test_gowin_yosys():
+    info = {
+        'device': 'GW2AR-LV18QN88C8/I7',
+        'family': 'GW2A-18C',
+        'synth_family': 'gw2a',
+    }
+    assert get_info_gowin_yosys('GW2AR-LV18QN88C8/I7') == info
+    info = {
+        'device': 'GW2A-LV18PG256C8/I7',
+        'family': 'GW2A-18C',
+        'synth_family': 'gw2a',
+    }
+    assert get_info_gowin_yosys('GW2A-LV18PG256C8/I7') == info

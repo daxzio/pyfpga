@@ -1,0 +1,24 @@
+#!/usr/bin/env python3
+
+#
+# Copyright (C) 2026 PyFPGA Project
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+
+"""gowin_pack mock: create the requested .fs bitstream."""
+
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-d', '--device')
+parser.add_argument('-o', '--output', required=True)
+parser.add_argument('--sspi_as_gpio', action='store_true')
+parser.add_argument('--mspi_as_gpio', action='store_true')
+parser.add_argument('--i2c_as_gpio', action='store_true')
+parser.add_argument('netlist', nargs='?')
+args = parser.parse_args()
+
+open(args.output, 'w', encoding='utf-8').close()
+
+print('INFO:the GOWIN_PACK mock has been executed')

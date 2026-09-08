@@ -1,6 +1,7 @@
 # PyFPGA [![License](https://img.shields.io/badge/License-GPL--3.0-darkgreen?style=flat-square)](LICENSE)
 
 ![Gowin](https://img.shields.io/badge/Gowin-1.9.11-blue.svg?style=flat-square)
+![Gowin Yosys](https://img.shields.io/badge/Gowin%20Yosys-yosys%20%7C%20nextpnr%20%7C%20apicula-darkgreen.svg?style=flat-square)
 ![Diamond](https://img.shields.io/badge/Diamond-3.13-blue.svg?style=flat-square)
 ![ISE](https://img.shields.io/badge/ISE-14.7-blue.svg?style=flat-square)
 ![Libero](https://img.shields.io/badge/Libero--Soc-2024.1-blue.svg?style=flat-square)

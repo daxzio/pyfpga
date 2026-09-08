@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+
+#
+# Copyright (C) 2026 PyFPGA Project
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+
+"""nextpnr-himbaechel mock: write the --write JSON if requested."""
+
+import argparse
+import json
+import sys
+
+parser = argparse.ArgumentParser(add_help=False)
+parser.add_argument('--json')
+parser.add_argument('--write')
+parser.add_argument('--device')
+parser.add_argument('--vopt', action='append')
+parser.add_argument('--freq')
+args, _unknown = parser.parse_known_args(sys.argv[1:])
+
+if args.write:
+    with open(args.write, 'w', encoding='utf-8') as file:
+        json.dump({'modules': {'top': {'cells': {}}}}, file)
+        file.write('\n')
+
+print('INFO:the NEXTPNR-HIMBAECHEL mock has been executed')

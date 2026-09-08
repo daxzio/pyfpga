@@ -100,7 +100,7 @@ if args.tool not in ['ise']:
     prj.add_param('SECS', '1')
     prj.make(last='syn')
 
-if args.tool not in ['openflow']:
+if args.tool not in ['openflow', 'gowin_yosys']:
     print('* INFO: checking basic VHDL Support')
     prj = Factory(args.tool)
     prj.add_vhdl('../examples/sources/vhdl/blink.vhdl')

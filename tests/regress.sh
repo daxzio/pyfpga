@@ -17,6 +17,7 @@ echo "##########################################################################
 declare -A TOOLS
 
 TOOLS["gowin"]="tangnano20k"
+TOOLS["gowin_yosys"]="tangnano20k"
 TOOLS["diamond"]="brevia2"
 TOOLS["ise"]="s6micro nexys3"
 TOOLS["libero"]="maker"
@@ -66,6 +67,9 @@ echo "##########################################################################
 cd ../examples/helpers
 
 for TOOL in "${!TOOLS[@]}"; do
+  if [[ -n "$SPECIFIED_TOOL" && "$TOOL" != "$SPECIFIED_TOOL" ]]; then
+    continue
+  fi
   bash "$TOOL".sh
 done
 
