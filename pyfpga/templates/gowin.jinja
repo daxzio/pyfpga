@@ -9,8 +9,6 @@
 {% if 'cfg' in steps %}# Project configuration -------------------------------------------------------
 
 create_project -force  -name {{ project }} -dir . -pn {{ part }} -device_version C
-# create_project -force -name {{ project }} -dir .
-# set_device -device_version C {{ part }} 
 
 {% if hooks %}{{ hooks.precfg | join('\n') }}{% endif %}
 
@@ -24,7 +22,6 @@ add_file {{ name }}
 {% if constraints %}# Constraints inclusion
 {% for name, attr in constraints.items() %}
 add_file {{ name }}
-# {% if loop.first %}set_property TARGET_CONSTRS_FILE {{ name }} [current_fileset -constrset]{% endif %}
 {% endfor %}
 {% endif %}
 
@@ -32,36 +29,42 @@ add_file {{ name }}
 set_option -top_module {{ top }}
 {% endif %}
 
+set_option -verilog_std sysv2017
+
 {% if includes %}# Verilog Includes
-set_option -include_path { {{ includes | join(' ') }} }
+set_option -include_path { {{- includes | join(';') -}} }
 {% endif %}
-# 
-# {% if defines %}# Verilog Defines
-# set_property VERILOG_DEFINE { {{ defines.items() | map('join', '=') | join(' ') }} } [current_fileset]
-# {% endif %}
-# 
-# {% if params %}# Verilog Parameters / VHDL Generics
-# set_property GENERIC { {{ params.items() | map('join', '=') | join(' ') }} } -objects [get_filesets sources_1]
-# {% endif %}
+
+{% if defines %}# Verilog Defines (Gowin 1.9.11+; 1.9.9 has no -ifdef)
+if {[catch {set_option -ifdef { {{ defines.items() | map('join', '=') | join(' ') }} }} err]} {
+    puts "WARNING: set_option -ifdef unsupported: $err"
+}
+{% endif %}
+
+{% if params %}# Verilog Parameters (Gowin 1.9.11+; 1.9.9 has no -verilog_param)
+if {[catch {set_option -verilog_param { {{ params.items() | map('join', '=') | join(' ') }} }} err]} {
+    puts "WARNING: set_option -verilog_param unsupported: $err"
+}
+{% endif %}
 
 {% if hooks %}{{ hooks.postcfg | join('\n') }}{% endif %}
-
-run close
 
 {% endif %}
 
 {% if 'syn' in steps or 'par' in steps or 'bit' in steps %}# Design flow -----------------------------------------------------------------
 
-open_project {{ project }}/{{ project }}.gprj
+{% if 'cfg' not in steps %}
+# 1.9.11+ only. 1.9.9 has no open_project — run cfg+syn+pnr in one gw_sh.
+if {[catch {open_project {{ project }}/{{ project }}.gprj} err]} {
+    puts "WARNING: open_project failed: $err"
+}
+{% endif %}
 
 {% if 'syn' in steps %}# Synthesis
 
 {% if hooks %}{{ hooks.presyn | join('\n') }}{% endif %}
 
-# PRESYNTH
 run syn
-#report_property [get_runs synth_1]
-# if { [get_property STATUS [get_runs synth_1]] ne "synth_design Complete!" } { exit 1 }
 
 {% if hooks %}{{ hooks.postsyn | join('\n') }}{% endif %}
 
@@ -73,8 +76,6 @@ run syn
 
 set_option -bit_format txt
 run pnr
-# #report_property [get_runs impl_1]
-# if { [get_property STATUS [get_runs impl_1]] ne "route_design Complete!" } { exit 1 }
 
 {% if hooks %}{{ hooks.postpar | join('\n') }}{% endif %}
 

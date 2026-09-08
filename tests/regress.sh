@@ -16,6 +16,7 @@ echo "##########################################################################
 
 declare -A TOOLS
 
+TOOLS["gowin"]="tangnano20k"
 TOOLS["diamond"]="brevia2"
 TOOLS["ise"]="s6micro nexys3"
 TOOLS["libero"]="maker"

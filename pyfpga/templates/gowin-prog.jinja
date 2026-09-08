@@ -6,10 +6,11 @@
 #
 #}
 
-# if { [ catch { open_hw_manager } ] } { open_hw }
-# connect_hw_server
-# open_hw_target
-# puts [get_hw_devices]
-# set obj [lindex [get_hw_devices [current_hw_device]] 0]
-# set_property PROGRAM.FILE {{ bitstream }} $obj
-# program_hw_devices $obj
+set -e
+
+# Prefer Gowin Programmer CLI when loaded; otherwise openFPGALoader.
+if command -v programmer_cli >/dev/null 2>&1; then
+  programmer_cli --fsFile {{ bitstream }}
+else
+  openFPGALoader {{ bitstream }}
+fi
