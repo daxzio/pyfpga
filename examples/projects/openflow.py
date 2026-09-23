@@ -7,7 +7,9 @@ from pyfpga.openflow import Openflow
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    '--board', choices=['icestick', 'edu-ciaa', 'orangecrab', 'ecp5evn'],
+    '--board', choices=[
+        'icestick', 'edu-ciaa', 'orangecrab', 'ecp5evn', 'tangnano20k',
+    ],
     default='icestick'
 )
 parser.add_argument(
@@ -40,6 +42,12 @@ if args.board == 'ecp5evn':
     prj.add_param('FREQ', '100000000')
     prj.add_cons('../sources/cons/ecp5evn/clk.lpf')
     prj.add_cons('../sources/cons/ecp5evn/led.lpf')
+if args.board == 'tangnano20k':
+    prj.set_part('GW2AR-LV18QN88C8/I7')
+    prj.add_param('FREQ', '27000000')
+    prj.add_cons('../sources/cons/tangnano20k/clk.nextpnr.cst')
+    prj.add_cons('../sources/cons/tangnano20k/led.nextpnr.cst')
+    prj.data['gowin_board'] = 'tangnano'
 prj.add_param('SECS', '1')
 
 if args.source == 'vhdl':

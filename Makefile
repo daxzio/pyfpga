@@ -1,6 +1,9 @@
 #!/usr/bin/make
 
-.PHONY: docs
+.PHONY: docs docker-gowin
+
+docker-gowin:
+	docker build -t pyfpga/nextpnr-gowin:sid -f docker/nextpnr-gowin/Dockerfile .
 
 ifeq ($(OS),Windows_NT)
   PATH_SEP := ;

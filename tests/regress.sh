@@ -20,7 +20,7 @@ TOOLS["diamond"]="brevia2"
 TOOLS["gowin"]="tangnano20k"
 TOOLS["ise"]="s6micro nexys3"
 TOOLS["libero"]="maker"
-TOOLS["openflow"]="icestick edu-ciaa orangecrab ecp5evn"
+TOOLS["openflow"]="icestick edu-ciaa orangecrab ecp5evn tangnano20k"
 TOOLS["quartus"]="de10nano"
 TOOLS["vivado"]="zybo arty"
 
@@ -49,6 +49,9 @@ for TOOL in "${!TOOLS[@]}"; do
   for BOARD in $BOARDS; do
     for SOURCE in "${SOURCES[@]}"; do
       if [[ "$TOOL" == "ise" && "$SOURCE" == "slog" ]]; then
+        continue
+      fi
+      if [[ "$TOOL" == "openflow" && "$BOARD" == "tangnano20k" && "$SOURCE" == "vhdl" ]]; then
         continue
       fi
       echo "> $TOOL - $BOARD - $SOURCE"

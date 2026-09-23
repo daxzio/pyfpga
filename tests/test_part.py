@@ -117,3 +117,10 @@ def test_openflow():
     assert get_info_openflow('25k-CSFBGA285') == info
     info = {'family': 'ecp5', 'device': 'um5g-85k', 'package': 'CABGA381'}
     assert get_info_openflow('um5g-85k-CABGA381') == info
+    info = {
+        'family': 'gowin',
+        'device': 'GW2AR-LV18QN88C8/I7',
+        'gowin_family': 'GW2A-18C',
+        'synth_family': 'gw2a',
+    }
+    assert get_info_openflow('GW2AR-LV18QN88C8/I7') == info

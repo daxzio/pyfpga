@@ -1,0 +1,3 @@
+// nextpnr-himbaechel CST — pad cell names after rename_gowin_iopads.py
+IO_LOC "led_o_OBUF_O" 15;
+IO_PORT "led_o_OBUF_O" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8 BANK_VCCIO=3.3;

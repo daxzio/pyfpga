@@ -143,11 +143,15 @@ Openflow is the combination of different Free/Libre and Open Source (FLOSS) tool
    :width: 70%
    :align: center
 
-* Yosys for synthesis, with ghdl-yosys-plugin for VHDL support.
-* nextpnr in its ice40 and ecp5 versions.
-* Projects icestorm and Trellis.
+* Yosys for synthesis, with ghdl-yosys-plugin for VHDL support (iCE40, ECP5, Xilinx EDIF).
+* Yosys ``synth_gowin`` for Gowin (SystemVerilog/Verilog only in the Gowin path).
+* nextpnr in its ice40 and ecp5 versions, plus ``nextpnr-himbaechel`` for Gowin.
+* Projects icestorm, Trellis, and Apicula (``gowin_pack``).
 
-It relies on Docker and fine-grain containers.
+It relies on Docker and fine-grain containers. Gowin place-and-route uses a local
+image built from ``docker/nextpnr-gowin/Dockerfile`` (Debian sid packages); run
+``make docker-gowin`` once. Synthesis still uses ``hdlc/ghdl:yosys``. Host paths
+outside ``$HOME`` (for example ``/mnt/sda/...``) are bind-mounted automatically.
 
 .. attention::
 
@@ -166,6 +170,10 @@ Valid PART formats:
 .. code::
 
    <DEVICE>-<PACKAGE>
+
+Gowin parts use the vendor part string (for example ``GW2AR-LV18QN88C8/I7`` for
+Tang Nano 20K). CST files must use pad cell names after iopadmap rename
+(``port_IBUF_I`` / ``port_OBUF_O``); see ``pyfpga/helpers/rename_gowin_iopads.py``.
 
 Quartus
 -------

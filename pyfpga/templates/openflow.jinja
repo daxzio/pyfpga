@@ -8,9 +8,40 @@
 
 set -e
 
-DOCKER="docker run --user $(id -u):$(id -g) --rm -v $HOME:$HOME -w $PWD"
+DOCKER="docker run --user $(id -u):$(id -g) --rm -v $HOME:$HOME{% for m in mounts %} -v {{ m }}:{{ m }}{% endfor %} -w $PWD"
 
 {% if 'syn' in steps %}# Synthesis
+{% if family == 'gowin' %}
+$DOCKER hdlc/ghdl:yosys /bin/bash -c "
+{% if hooks and hooks.presyn %}{{ hooks.presyn | join('\n') }}{% endif %}
+yosys -Q -p '
+{% if includes %}
+verilog_defaults -add{% for path in includes %} -I{{ path }}{% endfor %}
+{% endif %}
+{% if defines %}
+verilog_defines{% for key, value in defines.items() %} -D{{ key }}={{ value }}{% endfor %}
+{% endif %}
+{% if files %}
+{% for name, attr in files.items() %}
+{% if attr.hdl in ["vlog", "slog"] %}
+read_verilog -sv -defer {{ name }}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if params %}
+chparam{% for key, value in params.items() %} -set {{ key }} {{ value }}{% endfor %}
+{% endif %}
+hierarchy -top {{ top }}
+flatten
+synth_gowin -family {{ synth_family }} -top {{ top }} -noiopads{% if synth_extra %} {{ synth_extra }}{% endif %}
+iopadmap -bits -inpad IBUF O:I -outpad OBUF I:O
+clean
+write_json {{ project }}.json
+'
+{% if hooks and hooks.postsyn %}{{ hooks.postsyn | join('\n') }}{% endif %}
+"
+{{ python }} {{ rename_iopads }} {{ project }}.json {{ top }}
+{% else %}
 $DOCKER hdlc/ghdl:yosys /bin/bash -c "
 {% if hooks %}{{ hooks.presyn | join('\n') }}{% endif %}
 
@@ -71,10 +102,38 @@ write_verilog {{ project }}.v
 {% if hooks %}{{ hooks.postsyn | join('\n') }}{% endif %}
 "
 {% endif %}
+{% endif %}
 
 {% if 'par' in steps %}# Place and Route
 
 CONSTRAINTS="{{ constraints | join(' ') }}"
+
+{% if family == 'gowin' %}
+{% if cst_files %}
+: > {{ project }}.cst
+{% for name in cst_files %}
+cat {{ name }} >> {{ project }}.cst
+{% endfor %}
+{% endif %}
+{% if hooks and hooks.prepar %}
+set +e
+{{ hooks.prepar | join('\n') }}
+set -e
+{% endif %}
+$DOCKER {{ gowin_image }} /bin/bash -c "
+nextpnr-himbaechel \
+	--json {{ project }}.json \
+	--write {{ project }}_routed.json \
+	--device {{ device }} \
+	--vopt family={{ gowin_family }}{% if cst_files %} \
+	--vopt cst={{ project }}.cst{% endif %}{% if nextpnr_freq %} \
+	--freq {{ nextpnr_freq }}{% endif %}{% if nextpnr_extra %} \
+	{{ nextpnr_extra }}{% else %} \
+	--vopt sspi_as_gpio \
+	--vopt i2c_as_gpio{% endif %}
+{% if hooks and hooks.postpar %}{{ hooks.postpar | join('\n') }}{% endif %}
+"
+{% endif %}
 
 {% if family == 'ice40' %}
 {% if constraints %}
@@ -106,6 +165,18 @@ nextpnr-ecp5 --{{ device }} --package {{ package }} $CONSTRAINT --json {{ projec
 {% endif %}
 
 {% if 'bit' in steps %}# Bitstream generation
+
+{% if family == 'gowin' %}
+{% if hooks and hooks.prebit %}
+set +e
+{{ hooks.prebit | join('\n') }}
+set -e
+{% endif %}
+$DOCKER {{ gowin_image }} /bin/bash -c "
+gowin_pack {% if pack_flags %}{{ pack_flags }} {% endif %}-d {{ gowin_family }} -o {{ project }}.fs {{ project }}_routed.json
+{% if hooks and hooks.postbit %}{{ hooks.postbit | join('\n') }}{% endif %}
+"
+{% endif %}
 
 {% if family == 'ice40' %}
 $DOCKER hdlc/icestorm /bin/bash -c "

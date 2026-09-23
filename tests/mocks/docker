@@ -6,7 +6,28 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 
+import json
+import sys
+
 open('openflow.bit', 'w', encoding='utf-8').close()
 open('openflow.svf', 'w', encoding='utf-8').close()
+open('openflow.fs', 'w', encoding='utf-8').close()
+open('openflow_routed.json', 'w', encoding='utf-8').close()
+
+payload = {
+    'creator': 'pyfpga-docker-mock',
+    'modules': {
+        'Top': {
+            'ports': {},
+            'cells': {},
+        },
+        'TOPNAME': {
+            'ports': {},
+            'cells': {},
+        },
+    },
+}
+with open('openflow.json', 'w', encoding='utf-8') as handle:
+    json.dump(payload, handle)
 
 print('INFO:the DOCKER mock has been executed')

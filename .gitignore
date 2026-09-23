@@ -3,3 +3,9 @@ ignore*
 results
 venv
 __pycache__
+*.egg-info
+openflow.fs
+openflow.bit
+openflow.json
+openflow.svf
+openflow_routed.json

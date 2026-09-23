@@ -40,10 +40,21 @@ def test_libero():
 
 def test_openflow():
     tool = 'openflow'
-    generate(tool, 'DEVICE-PACKAGE')
+    generate(tool, 'hx8k-ct256')
     base = f'results/{tool}/{tool}'
     assert Path(f'{base}.sh').exists(), 'file not found'
     assert Path(f'{base}-prog.sh').exists(), 'file not found'
+
+
+def test_openflow_gowin():
+    tool = 'openflow'
+    generate(tool, 'GW2AR-LV18QN88C8/I7')
+    base = f'results/{tool}/{tool}'
+    assert Path(f'{base}.sh').exists(), 'file not found'
+    text = Path(f'{base}.sh').read_text(encoding='utf-8')
+    assert 'synth_gowin' in text, 'missing Gowin synthesis'
+    assert 'nextpnr-himbaechel' in text, 'missing Gowin P&R'
+    assert 'gowin_pack' in text, 'missing gowin_pack'
 
 
 def test_quartus():
