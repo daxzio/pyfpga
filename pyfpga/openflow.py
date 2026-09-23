@@ -64,7 +64,7 @@ class Openflow(Project):
         self.conf['tool'] = tool
         self.conf['make_cmd'] = f'bash {tool}.sh'
         self.conf['make_ext'] = 'sh'
-        self.conf['prog_bit'] = ['fs', 'svf', 'bit']
+        self.conf['prog_bit'] = ['svf', 'bit', 'fs']
         self.conf['prog_cmd'] = f'bash {tool}-prog.sh'
         self.conf['prog_ext'] = 'sh'
 

@@ -40,7 +40,7 @@ def test_libero():
 
 def test_openflow():
     tool = 'openflow'
-    generate(tool, 'hx8k-ct256')
+    generate(tool, 'DEVICE-PACKAGE')
     base = f'results/{tool}/{tool}'
     assert Path(f'{base}.sh').exists(), 'file not found'
     assert Path(f'{base}-prog.sh').exists(), 'file not found'
