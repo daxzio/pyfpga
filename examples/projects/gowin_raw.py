@@ -2,7 +2,7 @@
 
 import argparse
 
-from pyfpga.gowin_yosys import GowinYosys
+from pyfpga.gowin_raw import GowinRaw
 
 
 parser = argparse.ArgumentParser()
@@ -17,7 +17,7 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
-prj = GowinYosys(odir=f'results/gowin_yosys/{args.source}/{args.board}')
+prj = GowinRaw(odir=f'results/gowin_raw/{args.source}/{args.board}')
 
 if args.board == 'tangnano20k':
     prj.set_part('GW2AR-LV18QN88C8/I7')

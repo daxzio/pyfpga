@@ -1,7 +1,7 @@
 from pyfpga.ise import get_info as get_info_ise
 from pyfpga.libero import get_info as get_info_libero
 from pyfpga.openflow import get_info as get_info_openflow
-from pyfpga.gowin_yosys import get_info as get_info_gowin_yosys
+from pyfpga.gowin_raw import get_info as get_info_gowin_raw
 
 
 def test_ise():
@@ -120,16 +120,30 @@ def test_openflow():
     assert get_info_openflow('um5g-85k-CABGA381') == info
 
 
-def test_gowin_yosys():
+def test_gowin_raw():
     info = {
         'device': 'GW2AR-LV18QN88C8/I7',
         'family': 'GW2A-18C',
         'synth_family': 'gw2a',
     }
-    assert get_info_gowin_yosys('GW2AR-LV18QN88C8/I7') == info
+    assert get_info_gowin_raw('GW2AR-LV18QN88C8/I7') == info
     info = {
         'device': 'GW2A-LV18PG256C8/I7',
         'family': 'GW2A-18C',
         'synth_family': 'gw2a',
     }
-    assert get_info_gowin_yosys('GW2A-LV18PG256C8/I7') == info
+    assert get_info_gowin_raw('GW2A-LV18PG256C8/I7') == info
+    info = {
+        'device': 'GW5A-LV25MG121NC1/I0',
+        'family': 'GW5A-25A',
+        'synth_family': 'gw5a',
+    }
+    assert get_info_gowin_raw('GW5A-LV25MG121NC1/I0') == info
+    assert get_info_gowin_raw('GW5A-LV25MG121NES') == info
+    info = {
+        'device': 'GW1NR-LV9QN88PC6/I5',
+        'family': 'GW1N-9C',
+        'synth_family': 'gw1n',
+    }
+    assert get_info_gowin_raw('GW1NR-LV9QN88PC6/I5') == info
+    assert get_info_gowin_raw('GW1NR-LV9QN88C6/I5') == info

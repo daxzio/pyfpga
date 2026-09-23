@@ -84,21 +84,27 @@ Yosys ``synth_gowin`` + ``nextpnr-himbaechel`` + Apicula ``gowin_pack``.
 Runs on the host PATH (no Gowin EDA, no Docker). Do not ``module load gowin``
 alongside this flow: vendor ``libstdc++`` breaks nextpnr.
 
-Default part is ``GW2AR-LV18QN88C8/I7`` (Sipeed Tang Nano 20K). Bitstreams are
-``.fs`` files. CST ``IO_LOC`` names must be pad cells after iopadmap rename
-(``port_IBUF_I`` / ``port_OBUF_O``); a pad cell cannot share a top-level port
-name. Set ``FREQ`` in Hz (e.g. ``27000000``) to pass ``--freq`` to nextpnr.
+Default part is ``GW2AR-LV18QN88C8/I7`` (Sipeed Tang Nano 20K). Also known:
+``GW5A-LV25MG121NC1/I0`` (Tang Primer 25K) and ``GW1NR-LV9QN88PC6/I5``
+(Tang Nano 9K). Bitstreams are ``.fs`` files. CST ``IO_LOC`` / ``IO_PORT`` use
+the same top-level port names as native Gowin EDA (``synth_gowin`` inserts IO
+buffers). Set ``FREQ`` in Hz (e.g. ``27000000``) to pass ``--freq`` to nextpnr.
 
 Needs ``yosys``, ``nextpnr-himbaechel`` (himbaechel + gowin, matching family
-chipdb), and ``gowin_pack`` (``pip install apycula``).
+chipdb), and ``gowin_pack`` (``pip install apycula``). Host nextpnr packages
+often ship only ``GW2A-18C``; for Primer 25K / Nano 9K set
+``NEXTPNR_GOWIN_CHIPDB_DIR`` to a directory containing ``chipdb-GW5A-25A.bin`` /
+``chipdb-GW1N-9C.bin`` (extract from ``pyfpga/nextpnr-gowin:sid`` under
+``/usr/share/nextpnr/himbaechel/gowin/``), or set ``NEXTPNR_GOWIN_CHIPDB`` to
+one file.
 
 Example:
 
 .. code::
 
-   from pyfpga.gowin_yosys import GowinYosys
+   from pyfpga.gowin_raw import GowinRaw
 
-   prj = GowinYosys()
+   prj = GowinRaw()
 
 ISE
 ---

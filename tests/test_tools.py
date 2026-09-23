@@ -22,8 +22,8 @@ def test_gowin():
     assert Path(f'{base}-prog.sh').exists(), 'file not found'
 
 
-def test_gowin_yosys():
-    tool = 'gowin_yosys'
+def test_gowin_raw():
+    tool = 'gowin_raw'
     generate(tool, 'GW2AR-LV18QN88C8/I7')
     base = f'results/{tool}/{tool}'
     assert Path(f'{base}.sh').exists(), 'file not found'

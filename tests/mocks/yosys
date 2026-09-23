@@ -6,7 +6,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 
-"""Yosys mock: write a minimal JSON so rename_gowin_iopads.py can run."""
+"""Yosys mock: write a minimal JSON for regress (nextpnr step is mocked separately)."""
 
 import json
 import re
@@ -15,7 +15,7 @@ import sys
 text = ' '.join(sys.argv)
 json_match = re.search(r'write_json\s+(\S+)', text)
 top_match = re.search(r'-top\s+(\S+)', text)
-out = (json_match.group(1) if json_match else 'gowin_yosys.json').rstrip(';')
+out = (json_match.group(1) if json_match else 'gowin_raw.json').rstrip(';')
 top = (top_match.group(1) if top_match else 'top').rstrip(';')
 
 with open(out, 'w', encoding='utf-8') as file:

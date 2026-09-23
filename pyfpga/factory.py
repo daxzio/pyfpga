@@ -12,7 +12,7 @@ A factory class to create FPGA projects.
 
 from pyfpga.diamond import Diamond
 from pyfpga.gowin import Gowin
-from pyfpga.gowin_yosys import GowinYosys
+from pyfpga.gowin_raw import GowinRaw
 from pyfpga.ise import Ise
 from pyfpga.libero import Libero
 from pyfpga.openflow import Openflow
@@ -23,7 +23,7 @@ from pyfpga.vivado import Vivado
 TOOLS = {
     'diamond': Diamond,
     'gowin': Gowin,
-    'gowin_yosys': GowinYosys,
+    'gowin_raw': GowinRaw,
     'ise': Ise,
     'libero': Libero,
     'openflow': Openflow,
