@@ -9,12 +9,9 @@ Implements support for an Open Source development flow.
 """
 
 import os
-import sys
 from pathlib import Path
 
 from pyfpga.project import Project
-
-_RENAME = Path(__file__).parent / 'helpers' / 'rename_gowin_iopads.py'
 
 _KNOWN_GOWIN_PARTS = {
     # Tang Nano 20K
@@ -90,8 +87,6 @@ class Openflow(Project):
         if info['family'] == 'gowin':
             self.data['gowin_family'] = info['gowin_family']
             self.data['synth_family'] = info['synth_family']
-            self.data['rename_iopads'] = _RENAME.resolve().as_posix()
-            self.data['python'] = sys.executable
             self.data.setdefault('gowin_image', 'pyfpga/nextpnr-gowin:sid')
             # GW5A distributed RAM (RAM16SDP4) placement is incomplete; prefer BSRAM.
             if 'synth_extra' not in self.data:

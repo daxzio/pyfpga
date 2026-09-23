@@ -33,14 +33,12 @@ chparam{% for key, value in params.items() %} -set {{ key }} {{ value }}{% endfo
 {% endif %}
 hierarchy -top {{ top }}
 flatten
-synth_gowin -family {{ synth_family }} -top {{ top }} -noiopads{% if synth_extra %} {{ synth_extra }}{% endif %}
-iopadmap -bits -inpad IBUF O:I -outpad OBUF I:O
+synth_gowin -family {{ synth_family }} -top {{ top }}{% if synth_extra %} {{ synth_extra }}{% endif %}
 clean
 write_json {{ project }}.json
 '
 {% if hooks and hooks.postsyn %}{{ hooks.postsyn | join('\n') }}{% endif %}
 "
-{{ python }} {{ rename_iopads }} {{ project }}.json {{ top }}
 {% else %}
 $DOCKER hdlc/ghdl:yosys /bin/bash -c "
 {% if hooks %}{{ hooks.presyn | join('\n') }}{% endif %}

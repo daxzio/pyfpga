@@ -172,8 +172,8 @@ Valid PART formats:
    <DEVICE>-<PACKAGE>
 
 Gowin parts use the vendor part string (for example ``GW2AR-LV18QN88C8/I7`` for
-Tang Nano 20K). CST files must use pad cell names after iopadmap rename
-(``port_IBUF_I`` / ``port_OBUF_O``); see ``pyfpga/helpers/rename_gowin_iopads.py``.
+Tang Nano 20K). CST ``IO_LOC`` / ``IO_PORT`` use top-level port names (same as
+native Gowin EDA ``.cst`` files).
 
 Quartus
 -------
